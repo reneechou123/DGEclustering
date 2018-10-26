@@ -16,24 +16,36 @@
 #' @references \url{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-42}
 #' @return
 #' @examples  \dontrun{}
-DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5){
+DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL){
   nb.dim.ex <- ncol(expressions)
   nb.dim.an <- min((nrow(annotations) - 1), (ncol(annotations) - 1))
   
   evaluate <- function(groups, expressions, annotations){
+    options(warn=-1) # turn off warnings from unused evaluate indicator
     eva <- Indicators(groups, expressions, annotations)
-    weighted.ave <- 0
+    options(warn=0) # turn warnings back on
+    sum <- 0
+    scores <- c()
     for(i in 1:length(groups)){
-      weighted.ave <- weighted.ave + length(groups[[i]]) / length(unlist(groups)) * 100 * eva[[i]][[1]]
+      scores <- c(scores, eva[[i]][[1]])
+      sum <- sum + eva[[i]][[1]]
     }
-    return(round(weighted.ave, 2))
+    ave <- round(sum / length(groups), 2)
+    eva.res <- list(ave, scores)
+    names(eva.res) <- c('average, scores')
+    return(eva.res)
   }
 
   if (!is.null(annotations)){
     if (integrate.method == 'intego'){
       integrated.matrix <- Integration(annotations, expressions, nb.dim.ex, LIM.ASSO, LIM.COR)
       integrated.matrix <- apply(integrated.matrix, 2, as.factor)
-      MCA <- MCAsimple(integrated.matrix)[, 1:2]
+      if (is.null(nb.dim)){
+        MCA <- MCAsimple(integrated.matrix)[, 1:nb.dim.an]
+      }
+      else {
+        MCA <- MCAsimple(integrated.matrix)[, 1:nb.dim]
+      }
       DIST <- dist(MCA, diag=TRUE, upper=TRUE)
     }
     else{
