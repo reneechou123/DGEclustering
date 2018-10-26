@@ -2,8 +2,8 @@
 r-base >=3.4
 r-factominer
 r-cluster
-bioconductor-clusterprofiler
-bioconductor-annotationdbi
+bioconductor-clusterprofiler=3.6.0
+bioconductor-annotationdbi=1.40.0
 r-ggplot2
 r-intego
 r-rlist
@@ -14,6 +14,10 @@ r-png
 bioconductor-annotationhub
 r-rsqlite
 bioconductor-DOSE=3.4.0
+# Reproducibility
+bioconductor-org.Dm.eg.db=3.5.0
+bioconductor-Biobase=2.38.0
+bioconductor-BiocGenerics=0.24.0
 
 # Python libraries
 python >=3.6
