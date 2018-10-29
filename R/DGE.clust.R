@@ -19,7 +19,8 @@
 DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL){
   nb.dim.ex <- ncol(expressions)
   nb.dim.an <- min((nrow(annotations) - 1), (ncol(annotations) - 1))
-  
+  expressions <- scale(expressions)
+
   evaluate <- function(groups, expressions, annotations){
     options(warn=-1) # turn off warnings from unused evaluate indicator
     eva <- Indicators(groups, expressions, annotations)
