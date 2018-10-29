@@ -151,7 +151,7 @@ colnames(dat)
 
 ## this example selects log2 fold changes and adjusted p-values as input
 ## no scaling required
-exp <- dat[,grepl("log2FoldChange|padj", colnames(dat))]
+exp <- dat[,grepl("log2FoldChange|pvalue", colnames(dat))]
 rownames(exp) <- make.names(dat[,gene.col], unique=TRUE)
 
 # annotaiton dataset
