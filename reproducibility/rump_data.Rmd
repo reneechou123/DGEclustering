@@ -1,0 +1,36 @@
+---
+title: "rump_data"
+author: "Renee Ti Chou"
+date: "October 29, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+```{r}
+library(DGEclustering)
+library(org.Dm.eg.db)
+setwd('~/Documents/rump_data')
+gene.col <- 'gene'
+orgdb <- org.Dm.eg.db
+keytype <- 'FLYBASE'
+dataset1 <- read.table('kc-overexpresion_full.tsv', header=T, quote='', sep='\t')
+dataset2 <- read.table('kc-chemical_full.tsv', header=T, quote='', sep='\t')
+datasets <- list(dataset1, dataset2)
+names(datasets) <- c('treatment1.vs.control', 'treatment2.vs.control')
+adjPvalue <- TRUE
+x.threshold <- 0.05
+y.threshold <- 0.05
+sig.res <- sig.subset(datasets, geneCol=gene.col, x.dsNumber=1, y.dsNumber=2, x.threshold=x.threshold, y.threshold=y.threshold, adjPvalue=adjPvalue)
+dat <- rbind(sig.res$dis, sig.res$con)
+exp <- dat[,grepl("log2FoldChange|pvalue", colnames(dat))]
+rownames(exp) <- make.names(dat[,gene.col], unique=TRUE)
+ann <- annotate.genes(OrgDb=orgdb, keyType=keytype, genes=unlist(dat[gene.col]), GOEnrichment=TRUE, BgGenes=dataset1[gene.col])
+```
+
