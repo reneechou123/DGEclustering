@@ -40,6 +40,10 @@ nb.group=8
 
 ```{r}
 res <- DGE.clust(expressions=exp, annotations=ann, clust.method='agnes', nb.group=nb.group)
+res$evaluation
+```
+
+```{r}
 p <- cluster.plot(datasets, res$groups, x.dsNumber=1, y.dsNumber=2, geneCol=gene.col, adjPvalue=adjPvalue)
 p
 ```
@@ -48,4 +52,14 @@ p
 p.GO <- cluster.enrich(clusterGroups=res$groups, OrgDb=orgdb, keyType=keytype, BgGenes=bg.genes, 
 ont='BP', top=10)
 p.GO
+```
+
+```{r}
+res2 <- DGE.clust(expressions=exp, annotations=ann, integrate.method='new', clust.method='agnes', nb.group=nb.group, OrgDb=orgdb, keyType=keytype, nb.dim=2)
+res2$evaluation
+```
+
+```{r}
+p2 <- cluster.plot(datasets, res2$groups, x.dsNumber=1, y.dsNumber=2, geneCol=gene.col, adjPvalue=adjPvalue)
+p2
 ```

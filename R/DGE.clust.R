@@ -13,6 +13,7 @@
 #' @import rlist
 #' @import GOSemSim
 #' @import AnnotationDbi
+#' @import scales
 #' @references \url{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-42}
 #' @return
 #' @examples  \dontrun{}
@@ -25,13 +26,15 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     options(warn=-1) # turn off warnings from unused evaluate indicator
     eva <- Indicators(groups, expressions, annotations)
     options(warn=0) # turn warnings back on
-    sum <- 0
     scores <- c()
     for(i in 1:length(groups)){
-      scores <- c(scores, eva[[i]][[1]])
-      sum <- sum + eva[[i]][[1]]
+      if (is.na(eva[[i]][[1]]))
+        scores <- c(scores, -1/3)
+      else
+        scores <- c(scores, eva[[i]][[1]])
     }
-    ave <- round(sum / length(groups), 2)
+    rescale(scores, to=c(0,1))
+    ave <- round(sum(scores) / length(groups), 2)
     eva.res <- list(ave, scores)
     names(eva.res) <- c('average', 'scores')
     return(eva.res)
