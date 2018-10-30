@@ -31,7 +31,7 @@ annotate.genes <- function(OrgDb, keyType, genes, GOEnrichment=FALSE, BgGenes=NU
 
   # construct binary GO term matrix
   ann <- data.frame(genes=ds.keys)
-  rownames(ann) <- ds.keys  
+  rownames(ann) <- ds.keys
   if (GOEnrichment == FALSE){
     for (row in 1:nrow(GO.res)){
       GO.term <- GO.res[row, 'GO']

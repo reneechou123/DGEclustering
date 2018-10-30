@@ -16,6 +16,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 ```{r}
 library(DGEclustering)
 library(org.Dm.eg.db)
+library(AnnotationDbi)
 setwd('~/Documents/rump_data')
 gene.col <- 'gene'
 orgdb <- org.Dm.eg.db
@@ -31,6 +32,20 @@ sig.res <- sig.subset(datasets, geneCol=gene.col, x.dsNumber=1, y.dsNumber=2, x.
 dat <- rbind(sig.res$dis, sig.res$con)
 exp <- dat[,grepl("log2FoldChange|pvalue", colnames(dat))]
 rownames(exp) <- make.names(dat[,gene.col], unique=TRUE)
-ann <- annotate.genes(OrgDb=orgdb, keyType=keytype, genes=unlist(dat[gene.col]), GOEnrichment=TRUE, BgGenes=unlist(dataset1[gene.col]))
+genes <- dat[,gene.col]
+bg.genes <- dataset1[,gene.col]
+ann <- annotate.genes(OrgDb=orgdb, keyType=keytype, genes=genes, GOEnrichment=TRUE, BgGenes=bg.genes)
+nb.group=8
 ```
 
+```{r}
+res <- DGE.clust(expressions=exp, annotations=ann, clust.method='agnes', nb.group=nb.group)
+p <- cluster.plot(datasets, res$groups, x.dsNumber=1, y.dsNumber=2, geneCol=gene.col, adjPvalue=adjPvalue)
+p
+```
+
+```{r}
+p.GO <- cluster.enrich(clusterGroups=res$groups, OrgDb=orgdb, keyType=keytype, BgGenes=bg.genes, 
+ont='BP', top=10)
+p.GO
+```
