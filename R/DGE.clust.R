@@ -26,17 +26,17 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     options(warn=-1) # turn off warnings from unused evaluate indicator
     eva <- Indicators(groups, expressions, annotations)
     options(warn=0) # turn warnings back on
-    scores <- c()
+    original.scores <- c()
     for(i in 1:length(groups)){
       if (is.na(eva[[i]][[1]]))
-        scores <- c(scores, -1/3)
+        original.scores <- c(original.scores, -1/3)
       else
-        scores <- c(scores, eva[[i]][[1]])
+        original.scores <- c(original.scores, eva[[i]][[1]])
     }
-    rescale(scores, to=c(0,1))
+    scores <- rescale(original.scores, to=c(0,1))
     ave <- round(sum(scores) / length(groups), 2)
-    eva.res <- list(ave, scores)
-    names(eva.res) <- c('average', 'scores')
+    eva.res <- list(ave, scores, original.scores)
+    names(eva.res) <- c('average', 'scores', 'original.scores')
     return(eva.res)
   }
 
