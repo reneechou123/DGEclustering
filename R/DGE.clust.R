@@ -17,7 +17,7 @@
 #' @references \url{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-42}
 #' @return
 #' @examples  \dontrun{}
-DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL){
+DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, alpha=1, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL){
   nb.dim.ex <- ncol(expressions)
   nb.dim.an <- min((nrow(annotations) - 1), (ncol(annotations) - 1))
   expressions <- scale(expressions)
@@ -56,24 +56,21 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       if (is.null(OrgDb) && is.null(keyType)){
         stop('the argument OrgDb is required for new.distance integration method.')
       }
-      semData <- godata(OrgDb=OrgDb, ont='BP', computeIC=FALSE)
-      genes <- mapIds(OrgDb, keys=rownames(expressions), column='ENTREZID', keytype=keyType, multiVals='first')
-      genes <- genes[!is.na(genes)] 
-      GO.sim <- mgeneSim(genes, semData, measure='Wang')
+      semData <- godata(OrgDb=OrgDb, ont='BP', keytype=keyType, computeIC=FALSE)
+      GO.sim <- mgeneSim(rownames(expressions), semData, measure='Wang')
       sub.genes <- genes[genes %in% colnames(GO.sim)]
-      sub.expressions <- expressions[rownames(expressions) %in% names(sub.genes),]
-      sub.annotations <- annotations[rownames(annotations) %in% names(sub.genes),]
+      sub.expressions <- expressions[rownames(expressions) %in% sub.genes,]
+      sub.annotations <- annotations[rownames(annotations) %in% sub.genes,]
       exp.sim <- as.matrix(dist(sub.expressions, diag=TRUE, upper=TRUE))
-      integrated.matrix <- exp.sim * GO.sim
+      integrated.matrix <- GO.sim ^ alpha * exp.sim
       integrated.matrix <- scale(integrated.matrix)
-      PCA <- PCAsimple(integrated.matrix)$ind[, 1:2]
+      PCA <- PCAsimple(integrated.matrix)$ind[, 1:nb.dim]
       DIST <- dist(PCA, diag=TRUE, upper=TRUE)
     }
   
     if (clust.method != 'genclust'){ # set intego as default
       groups <- clustering(DIST, mode='Classification', nb.group=nb.group)
     }
-
     else{
       # input for gensclust does not need to be scaled (i.e. MCA is already scaled)
       # generate MCA input for Genclust (i.e. input is GO term-integrated)
