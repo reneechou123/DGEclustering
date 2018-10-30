@@ -2,7 +2,7 @@
 #' @import GOSemSim
 #' @import AnnotationDbi
 #' @import AnnotationHub
-create.GO.sim.mat <- function(gtf.file.path, OrgDb, ont='BP', computeIC=FALSE, keyType, measure='Wang', out.file.path) {
+create.GO.sim.mat <- function(gtf.file.path, OrgDb, ont='BP', keyType, computeIC=FALSE, measure='Wang', out.file.path) {
   temp.folder <- '/tmp/dgeclustering'
   system(paste('mkdir -p', temp.folder))
   geneids.filepath <- file.path(temp.folder, 'geneids.tsv')
@@ -11,5 +11,7 @@ create.GO.sim.mat <- function(gtf.file.path, OrgDb, ont='BP', computeIC=FALSE, k
 	       '<', gtf.file.path,
 	       '>', geneids.filepath))
   genes <- unique(read.table(geneids.filepath, header=FALSE, stringsAsFactors=FALSE)$V1)
-
+  semData <- godata(OrgDb=orgdb, ont='BP', computeIC=FALSE)
+  res <- mgeneSim(genes, semData, measure=measure)
+  
 }

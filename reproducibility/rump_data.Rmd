@@ -31,6 +31,6 @@ sig.res <- sig.subset(datasets, geneCol=gene.col, x.dsNumber=1, y.dsNumber=2, x.
 dat <- rbind(sig.res$dis, sig.res$con)
 exp <- dat[,grepl("log2FoldChange|pvalue", colnames(dat))]
 rownames(exp) <- make.names(dat[,gene.col], unique=TRUE)
-ann <- annotate.genes(OrgDb=orgdb, keyType=keytype, genes=unlist(dat[gene.col]), GOEnrichment=TRUE, BgGenes=dataset1[gene.col])
+ann <- annotate.genes(OrgDb=orgdb, keyType=keytype, genes=unlist(dat[gene.col]), GOEnrichment=TRUE, BgGenes=unlist(dataset1[gene.col]))
 ```
 
