@@ -33,7 +33,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     }
     ave <- round(sum / length(groups), 2)
     eva.res <- list(ave, scores)
-    names(eva.res) <- c('average, scores')
+    names(eva.res) <- c('average', 'scores')
     return(eva.res)
   }
 
