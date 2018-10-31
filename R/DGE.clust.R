@@ -71,12 +71,13 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       new.GO.sim <- rbind(cbind(GO.sim, upper.right), cbind(lower.left, lower.right))
       rownames(new.GO.sim) <- c(rownames(GO.sim), missing.genes)
       colnames(new.GO.sim) <- rownames(new.GO.sim)
-      
+      sem.dis <- 1 - new.GO.sim
+
       # similarity matrix for expression
-      exp.sim <- as.matrix(dist(expressions, diag=TRUE, upper=TRUE))
-      
+      exp.dis <- 1 - (as.matrix(dist(expressions, diag=TRUE, upper=TRUE)))
+
       # integration
-      integrated.matrix <- new.GO.sim ^ alpha * exp.sim
+      integrated.matrix <- sem.dis ^ alpha * exp.dis
       integrated.matrix <- scale(integrated.matrix)
       PCA <- PCAsimple(integrated.matrix)$ind[, 1:nb.dim]
       DIST <- dist(PCA, diag=TRUE, upper=TRUE)
