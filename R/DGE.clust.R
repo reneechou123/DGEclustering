@@ -13,7 +13,6 @@
 #' @import rlist
 #' @import GOSemSim
 #' @import AnnotationDbi
-#' @import scales
 #' @references \url{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-42}
 #' @return
 #' @examples  \dontrun{}

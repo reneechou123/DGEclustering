@@ -20,6 +20,5 @@ Imports: clusterProfiler,
     GenomicFeatures,
     png,
     AnnotationHub,
-    RSQLite,
-    scales
+    RSQLite
 RoxygenNote: 6.1.0
