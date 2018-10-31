@@ -172,7 +172,7 @@ nb.group=8
 # Clustering analysis
 ## the user can choose between two types of integration method through `integrate.method`:
 ## 1. `intego`, which decomposes expression matrix into a binary matrix (InteGO; DOI: 10.1186/1471-2105-14-42)
-## 2. `semsim`, which combines GO term semantic similarity matrix and gene expression similarity matirx
+## 2. `GOdis`, which combines GO term semantic dissimilarity matrix and gene expression dissimilarity matirx
 ##
 ## the user can also choose from two types of clustering algorithm through `clust.method`:
 ## 1. `agnes` (Agglomerative Nesting (Hierarchical Clustering); DOI:10.1002/9780470316801)
