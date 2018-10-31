@@ -17,7 +17,7 @@
 #' @references \url{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-42}
 #' @return
 #' @examples  \dontrun{}
-DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, alpha=1, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL){
+DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, alpha=1, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL, sim.mat=NULL){
   nb.dim.ex <- ncol(expressions)
   nb.dim.an <- min((nrow(annotations) - 1), (ncol(annotations) - 1))
   expressions <- scale(expressions)
@@ -33,7 +33,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       else
         original.scores <- c(original.scores, eva[[i]][[1]])
     }
-    scores <- (original.scores + 1/3) * (3/4)
+    scores <- (original.scores + 1/3) * (3/4) # rescale scores from range (-1/3 ~ 1) to range (0 ~ 1)
     ave <- round(sum(scores) / length(groups), 2)
     eva.res <- list(ave, scores, original.scores)
     names(eva.res) <- c('average', 'scores', 'original.scores')
@@ -56,12 +56,27 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       if (is.null(OrgDb) && is.null(keyType)){
         stop('the argument OrgDb is required for new.distance integration method.')
       }
-      semData <- godata(OrgDb=OrgDb, ont='BP', keytype=keyType, computeIC=FALSE)
-      GO.sim <- mgeneSim(rownames(expressions), semData, measure='Wang')
-      sub.genes <- genes[genes %in% colnames(GO.sim)]
-      sub.expressions <- expressions[rownames(expressions) %in% sub.genes,]
-      sub.annotations <- annotations[rownames(annotations) %in% sub.genes,]
-      exp.sim <- as.matrix(dist(sub.expressions, diag=TRUE, upper=TRUE))
+      genes <- rownames(expressions)
+      if (is.null(sim.mat)){
+        semData <- godata(OrgDb=OrgDb, ont='BP', keytype=keyType, computeIC=FALSE)
+        GO.sim <- mgeneSim(genes, semData, measure='Wang')
+      }
+      else {
+        GO.sim <- sim.mat[rownames(sim.mat) %in% genes, colnames(sim.mat) %in% genes]
+      }
+      # semantic simlarity may result in some genes missing
+      missing.genes <- genes[!genes %in% rownames(GO.sim)]
+      lower.right <- diag(length(missing.genes))
+      upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
+      lower.left <- matrix(0, nrow=length(missing.genes), ncol=dim(GO.sim)[1])
+      GO.sim <- rbind(cbind(GO.sim, upper.right), cbind(lower.left, lower,right))
+      rownames(GO.sim) <- c(rownames(GO.sim), missing.genes)
+      colnames(GO.sim) <- rownames(GO.sim)
+      
+      # similarity matrix for expression
+      exp.sim <- as.matrix(dist(expressions, diag=TRUE, upper=TRUE))
+      
+      # integration
       integrated.matrix <- GO.sim ^ alpha * exp.sim
       integrated.matrix <- scale(integrated.matrix)
       PCA <- PCAsimple(integrated.matrix)$ind[, 1:nb.dim]
@@ -193,13 +208,12 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
                   paste('## Number of groups:', nb.group), sep='\n'), '\n')
   }
   
+  evaluation <- evaluate(groups, expressions, annotations)
   if (integrate.method == 'intego'){
-    evaluation <- evaluate(groups, expressions, annotations)
     res <- list(groups, integrated.matrix, MCA, vignette, evaluation)
     names(res) <- c('groups', 'integrated.matrix', 'MCA', 'vignette', 'evaluation')
   }
   else {
-    evaluation <- evaluate(groups, sub.expressions, sub.annotations)
     res <- list(groups, integrated.matrix, PCA, vignette, evaluation)
     names(res) <- c('groups', 'integrated.matrix', 'PCA', 'vignette', 'evaluation')
   }
