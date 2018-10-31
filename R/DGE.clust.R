@@ -21,17 +21,20 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
   nb.dim.an <- min((nrow(annotations) - 1), (ncol(annotations) - 1))
   expressions <- scale(expressions)
 
-  evaluate <- function(groups, expressions, annotations){
-    options(warn=-1) # turn off warnings from unused evaluate indicator
-    eva <- Indicators(groups, expressions, annotations)
-    options(warn=0) # turn warnings back on
-    original.scores <- c()
-    for(i in 1:length(groups)){
-      if (is.na(eva[[i]][[1]]))
-        original.scores <- c(original.scores, -1/3)
-      else
-        original.scores <- c(original.scores, eva[[i]][[1]])
+  EVALUATE <- function(groups, expressions, annotations){
+    # code modified from InteGO
+    INDIC = function(group.element){
+    if (length(group.element) > 1){
+      correlations = cor(t(expressions)[,group.element])
+      res = sum(correlations[lower.tri(correlations, diag = F)])/(length(group.element)*(length(group.element)-1) /2)
+    } 
+    else 	
+      res = -1/3 # the lowest score
+    names(res) = names(group.element)
+    return(res)
     }
+    
+    original.scores = lapply(groups, INDIC)	  
     scores <- (original.scores + 1/3) * (3/4) # rescale scores from range (-1/3 ~ 1) to range (0 ~ 1)
     ave <- round(sum(scores) / length(groups), 2)
     eva.res <- list(ave, scores, original.scores)
@@ -208,7 +211,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
                   paste('## Number of groups:', nb.group), sep='\n'), '\n')
   }
   
-  evaluation <- evaluate(groups, expressions, annotations)
+  evaluation <- EVALUATE(groups, expressions, annotations)
   if (integrate.method == 'intego'){
     res <- list(groups, integrated.matrix, MCA, vignette, evaluation)
     names(res) <- c('groups', 'integrated.matrix', 'MCA', 'vignette', 'evaluation')
