@@ -22,6 +22,7 @@ bioconductor-BiocGenerics=0.24.0
 # Python libraries
 python >=3.6
 pandas
+numpy=1.11.3
 matplotlib
 scipy
 
