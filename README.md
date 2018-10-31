@@ -24,6 +24,7 @@ git clone https://github.com/reneechou123/DGEclustering.git
 conda create -n r-dgeclustering --file DGEclustering/requirements.txt
 source activate r-dgeclustering
 ```
+###### *The user can specify desired versions of packages in requirements.txt 
 
 3. Install package in R:
 ``` r
@@ -34,7 +35,7 @@ Alternatively, the user can install DGEclustering from [Bioconda](https://biocon
 ``` bash
 conda install r-dgeclustering
 ```
-
+###### *The versions of some dependencies are not specified for the one that is put onto Bioconda
 
 ## Usage
 Import libraries:
