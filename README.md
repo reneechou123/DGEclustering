@@ -170,9 +170,13 @@ nb.group=8
 #### Step 4: Cluster genes, and visualize the result: `DGE.clust`, `cluster.plot`
 ``` r
 # Clustering analysis
-## the user can choose from two types of clustering algorithm through `clust.method`:
-## 1. agnes (Agglomerative Nesting (Hierarchical Clustering); DOI:10.1002/9780470316801)
-## 2. genclust (GenClust; DOI: 10.1186/1471-2105-6-289)
+## the user can choose between two types of integration method through `integrate.method`:
+## 1. `intego`, which decomposes expression matrix into a binary matrix (InteGO; DOI: 10.1186/1471-2105-14-42)
+## 2. `semsim`, which combines GO term semantic similarity matrix and gene expression similarity matirx
+##
+## the user can also choose from two types of clustering algorithm through `clust.method`:
+## 1. `agnes` (Agglomerative Nesting (Hierarchical Clustering); DOI:10.1002/9780470316801)
+## 2. `genclust` (GenClust; DOI: 10.1186/1471-2105-6-289)
 res <- DGE.clust(expressions=exp, annotations=ann, clust.method='agnes', nb.group=nb.group)
 
 ## view clustering result and vignette
