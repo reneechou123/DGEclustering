@@ -69,7 +69,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       lower.right <- diag(length(missing.genes))
       upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
       lower.left <- matrix(0, nrow=length(missing.genes), ncol=dim(GO.sim)[1])
-      GO.sim <- rbind(cbind(GO.sim, upper.right), cbind(lower.left, lower,right))
+      GO.sim <- rbind(cbind(GO.sim, upper.right), cbind(lower.left, lower.right))
       rownames(GO.sim) <- c(rownames(GO.sim), missing.genes)
       colnames(GO.sim) <- rownames(GO.sim)
       
