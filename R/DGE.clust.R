@@ -34,7 +34,9 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     return(res)
     }
     
-    original.scores = lapply(groups, INDIC)	  
+    original.scores = c()
+    for (i in 1:length(groups))
+      c(original.scores, groups[[i]], INDIC)
     scores <- (original.scores + 1/3) * (3/4) # rescale scores from range (-1/3 ~ 1) to range (0 ~ 1)
     ave <- round(sum(scores) / length(groups), 2)
     eva.res <- list(ave, scores, original.scores)
