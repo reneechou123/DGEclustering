@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=TRUE)
 ```
+#### NOT the latest version. Please refer to README.md
 
 #### Note: Installing DGEclustering package
 ```{r}
