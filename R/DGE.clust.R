@@ -33,7 +33,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       else
         original.scores <- c(original.scores, eva[[i]][[1]])
     }
-    scores <- rescale(original.scores, to=c(0,1))
+    scores <- (original.scores + 1/3) * (3/4)
     ave <- round(sum(scores) / length(groups), 2)
     eva.res <- list(ave, scores, original.scores)
     names(eva.res) <- c('average', 'scores', 'original.scores')
