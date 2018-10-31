@@ -57,7 +57,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       }
       genes <- rownames(expressions)
       if (is.null(sim.mat)){
-        semData <- godata(OrgDb=OrgDb, ont='BP', keytype=keyType, computeIC=FALSE)
+        semData <- godata(OrgDb=OrgDb, ont=ont, keytype=keyType, computeIC=FALSE)
         GO.sim <- mgeneSim(genes, semData, measure='Wang')
       }
       else {
@@ -68,15 +68,15 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       lower.right <- diag(length(missing.genes))
       upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
       lower.left <- matrix(0, nrow=length(missing.genes), ncol=dim(GO.sim)[1])
-      GO.sim <- rbind(cbind(GO.sim, upper.right), cbind(lower.left, lower.right))
-      rownames(GO.sim) <- c(rownames(GO.sim), missing.genes)
-      colnames(GO.sim) <- rownames(GO.sim)
+      new.GO.sim <- rbind(cbind(GO.sim, upper.right), cbind(lower.left, lower.right))
+      rownames(new.GO.sim) <- c(rownames(GO.sim), missing.genes)
+      colnames(new.GO.sim) <- rownames(new.GO.sim)
       
       # similarity matrix for expression
       exp.sim <- as.matrix(dist(expressions, diag=TRUE, upper=TRUE))
       
       # integration
-      integrated.matrix <- GO.sim ^ alpha * exp.sim
+      integrated.matrix <- new.GO.sim ^ alpha * exp.sim
       integrated.matrix <- scale(integrated.matrix)
       PCA <- PCAsimple(integrated.matrix)$ind[, 1:nb.dim]
       DIST <- dist(PCA, diag=TRUE, upper=TRUE)
