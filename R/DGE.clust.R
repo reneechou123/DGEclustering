@@ -74,7 +74,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       # upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
       # lower.left <- matrix(0, nrow=length(missing.genes), ncol=dim(GO.sim)[1])
       sub.genes <- genes[genes %in% colnames(GO.sim)]
-      sub.expressions <- expressions[rownames(expressions) %in% names(sub.genes),]
+      sub.expressions <- expressions[rownames(expressions) %in% sub.genes,]
       sem.dis <- 1 - GO.sim
       # sem.dis <- 1 - new.GO.sim
 
