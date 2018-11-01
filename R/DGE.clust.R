@@ -68,7 +68,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       else {
         GO.sim <- sim.mat[rownames(sim.mat) %in% genes, colnames(sim.mat) %in% genes]
       }
-      # semantic simlarity may result in some genes missing
+      # semantic dissimlarity may result in some genes missing
       missing.genes <- genes[!genes %in% rownames(GO.sim)]
       lower.right <- diag(length(missing.genes))
       upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
@@ -78,8 +78,8 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       colnames(new.GO.sim) <- rownames(new.GO.sim)
       sem.dis <- 1 - new.GO.sim
 
-      # similarity matrix for expression
-      exp.dis <- 1 - (as.matrix(dist(expressions, diag=TRUE, upper=TRUE)))
+      # dissimilarity matrix for expression
+      exp.dis <- as.matrix(dist(expressions, diag=TRUE, upper=TRUE))
 
       # integration
       integrated.matrix <- sem.dis ^ alpha * exp.dis
