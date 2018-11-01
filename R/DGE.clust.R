@@ -69,17 +69,18 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
         GO.sim <- sim.mat[rownames(sim.mat) %in% genes, colnames(sim.mat) %in% genes]
       }
       # semantic dissimlarity may result in some genes missing
-      missing.genes <- genes[!genes %in% rownames(GO.sim)]
-      lower.right <- diag(length(missing.genes))
-      upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
-      lower.left <- matrix(0, nrow=length(missing.genes), ncol=dim(GO.sim)[1])
-      new.GO.sim <- rbind(cbind(GO.sim, upper.right), cbind(lower.left, lower.right))
-      rownames(new.GO.sim) <- c(rownames(GO.sim), missing.genes)
-      colnames(new.GO.sim) <- rownames(new.GO.sim)
-      sem.dis <- 1 - new.GO.sim
+      # missing.genes <- genes[!genes %in% rownames(GO.sim)]
+      # lower.right <- diag(length(missing.genes))
+      # upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
+      # lower.left <- matrix(0, nrow=length(missing.genes), ncol=dim(GO.sim)[1])
+      sub.genes <- genes[genes %in% colnames(GO.sim)]
+      sub.expressions <- expressions[rownames(expressions) %in% names(sub.genes),]
+      sem.dis <- 1 - GO.sim
+      # sem.dis <- 1 - new.GO.sim
 
       # dissimilarity matrix for expression
-      exp.dis <- as.matrix(dist(expressions, diag=TRUE, upper=TRUE))
+      # exp.dis <- as.matrix(dist(expressions, diag=TRUE, upper=TRUE))
+      exp.dis <- as.matrix(dist(sub.expressions, diag=TRUE, upper=TRUE))
 
       # integration
       integrated.matrix <- sem.dis ^ alpha * exp.dis
@@ -213,12 +214,13 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
                   paste('## Number of groups:', nb.group), sep='\n'), '\n')
   }
   
-  evaluation <- EVALUATE(groups, expressions)
   if (integrate.method == 'intego'){
+    evaluation <- EVALUATE(groups, expressions)
     res <- list(groups, integrated.matrix, MCA, vignette, evaluation)
     names(res) <- c('groups', 'integrated.matrix', 'MCA', 'vignette', 'evaluation')
   }
   else {
+    evaluation <- EVALUATE(groups, sub.expressions)
     res <- list(groups, integrated.matrix, PCA, vignette, evaluation)
     names(res) <- c('groups', 'integrated.matrix', 'PCA', 'vignette', 'evaluation')
   }
