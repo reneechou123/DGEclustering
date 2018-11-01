@@ -21,7 +21,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
   nb.dim.an <- min((nrow(annotations) - 1), (ncol(annotations) - 1))
   expressions <- scale(expressions)
 
-  EVALUATE <- function(groups, expressions, annotations){
+  EVALUATE <- function(groups, expressions){
     # code modified from InteGO
     INDIC = function(group.element){
     if (length(group.element) > 1){
@@ -36,7 +36,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     
     original.scores = c()
     for (i in 1:length(groups))
-      c(original.scores, INDIC(groups[[i]]))
+      original.scores <- c(original.scores, INDIC(groups[[i]]))
     scores <- (original.scores + 1/3) * (3/4) # rescale scores from range (-1/3 ~ 1) to range (0 ~ 1)
     ave <- round(sum(scores) / length(groups), 2)
     eva.res <- list(ave, scores, original.scores)
@@ -213,7 +213,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
                   paste('## Number of groups:', nb.group), sep='\n'), '\n')
   }
   
-  evaluation <- EVALUATE(groups, expressions, annotations)
+  evaluation <- EVALUATE(groups, expressions)
   if (integrate.method == 'intego'){
     res <- list(groups, integrated.matrix, MCA, vignette, evaluation)
     names(res) <- c('groups', 'integrated.matrix', 'MCA', 'vignette', 'evaluation')
