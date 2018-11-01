@@ -22,18 +22,17 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
   expressions <- scale(expressions)
 
   EVALUATE <- function(groups, expressions){
-    # code modified from InteGO
+    #--- code modified from InteGO ---#
     INDIC = function(group.element){
     if (length(group.element) > 1){
       correlations = cor(t(expressions)[,group.element])
-      res = sum(correlations[lower.tri(correlations, diag = F)])/(length(group.element)*(length(group.element)-1) /2)
+      res = sum(correlations[lower.tri(correlations, diag = F)]) / (length(group.element) * (length(group.element) - 1) / 2)
     } 
     else 	
       res = -1/3 # the lowest score
     names(res) = names(group.element)
     return(res)
-    }
-    
+    }   
     original.scores = c()
     for (i in 1:length(groups))
       original.scores <- c(original.scores, INDIC(groups[[i]]))
@@ -43,6 +42,37 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     names(eva.res) <- c('average', 'scores', 'original.scores')
     return(eva.res)
   }
+
+  PVALUES <- function(groups, original.scores, expressions, nb.sim=100, abaque=NULL){
+    size = function(x){return(as.numeric(lapply(1:length(x), function(g){return(length(x[[g]]))})))}
+    taille.g = unique(size(groups))
+    taille.g = taille.g[taille.g > 1]  
+    ABAQUE = function(taille){
+      simu = replicate(nb.sim, EVALUATE(groups = list(sample(row.names(expressions))[1:taille]), 
+					  expressions = expressions)$original.scores)
+      simu = t(simplify2array(simu))
+      abaque[[taille]] = simu ; names(abaque)[taille] = taille
+      return(abaque)
+    }
+    for (i in 1:length(taille.g)){
+      abaque = ABAQUE(taille.g[i], abaque)
+    }
+    PVAL = function(i, groups, groups.indic, abaque){
+      if (length(groups[[i]]) != 1){
+        pval = c(length(which(as.numeric(abaque[[length(groups[[i]])]][, 1]) > groups.indic[[i]])) 
+		 / nrow(abaque[[length(groups[[i]])]]))
+      } 
+      else{ 
+	pval = NA
+      }
+      names(pval) = c("indic.coexp")
+      return(pval)
+    }
+    groups.pval = lapply(1: length(groups), PVAL, groups, original.scores, abaque)
+    names(groups.pval) = names(groups)
+    return(list(groups.pval, abaque))
+  }
+  #--- code modified from InteGO ---#
 
   if (!is.null(annotations)){
     if (integrate.method == 'intego'){
@@ -69,17 +99,11 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
         GO.sim <- sim.mat[rownames(sim.mat) %in% genes, colnames(sim.mat) %in% genes]
       }
       # semantic dissimlarity may result in some genes missing
-      # missing.genes <- genes[!genes %in% rownames(GO.sim)]
-      # lower.right <- diag(length(missing.genes))
-      # upper.right <- matrix(0, nrow=dim(GO.sim)[1], ncol=length(missing.genes))
-      # lower.left <- matrix(0, nrow=length(missing.genes), ncol=dim(GO.sim)[1])
       sub.genes <- genes[genes %in% colnames(GO.sim)]
       sub.expressions <- expressions[rownames(expressions) %in% sub.genes,]
       sem.dis <- 1 - GO.sim
-      # sem.dis <- 1 - new.GO.sim
 
       # dissimilarity matrix for expression
-      # exp.dis <- as.matrix(dist(expressions, diag=TRUE, upper=TRUE))
       exp.dis <- as.matrix(dist(sub.expressions, diag=TRUE, upper=TRUE))
 
       # integration
