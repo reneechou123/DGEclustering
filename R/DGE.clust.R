@@ -72,7 +72,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     sig.clusters <- length(pvalues[pvalues<0.1 & !is.na(pvalues)]) / length(pvalues)
     abaque <- as.data.frame(do.call(cbind, abaque))
     pval.res <- list(pvalues, sig.clusters, abaque)
-    names(pval.res) = names('pvalues', 'proportion sig. clusters', 'simulated sets')
+    names(pval.res) = c('pvalues', 'proportion sig. clusters', 'simulated sets')
     return(pval.res)
     # proportion of pvalues
   }
