@@ -156,12 +156,15 @@ colnames(dat)
 exp <- dat[,grepl("log2FoldChange|pvalue", colnames(dat))]
 rownames(exp) <- make.names(dat[,gene.col], unique=TRUE)
 
-# annotaiton dataset
+# annotaiton dataset for `intego` integration method
 ## calculate number of GO terms assign to a specific number of genes
 sum(apply(ann, 2, sum) >= 10)
 
 ## choose the appropriate number of GO terms for annotation dataset
 ann <- ann[, apply(ann, 2, sum) >= 10]
+
+# annotation semantic similarity matrix for `newdis` integration method
+GO.sim <- create.GO.sim.mat(genes=rownames(exp), OrgDb=orgdb, ont='BP', keyType=keytype, computeIC=FALSE, measure='Wang', out.file.path=NULL)
 
 # choose the number of clustering groups
 nb.group=8
