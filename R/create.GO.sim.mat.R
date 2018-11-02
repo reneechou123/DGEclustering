@@ -13,7 +13,7 @@ create.GO.sim.mat <- function(gtf.file.path=NULL, genes=NULL, OrgDb, ont='BP', k
                  '>', geneids.filepath))
     genes <- unique(read.table(geneids.filepath, header=FALSE, stringsAsFactors=FALSE)$V1)
   }
-  semData <- godata(OrgDb=orgdb, ont=ont, computeIC=computeIC)
+  semData <- godata(OrgDb=orgdb, ont=ont, keytype=keyType, computeIC=computeIC)
   res <- mgeneSim(genes, semData, measure=measure)
   if(!is.null(out.file.path)){
     write.table(res, out.file.path, sep='\t', header=TRUE)
