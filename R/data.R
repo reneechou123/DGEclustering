@@ -53,3 +53,7 @@
 #'   \item{padj}
 #' }
 "treatment3.vs.control"
+
+"dme.sim.mat.1.rda"
+"dme.sim.mat.2.rda"
+"dme.sim.mat.3.rda"
