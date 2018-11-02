@@ -58,7 +58,6 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     for (i in 1:length(taille.g)){
       abaque = ABAQUE(taille.g[i], abaque)
     }
-    abaque <- as.data.frame(do.call(cbind, abaque))
     PVAL = function(i, groups, original.scores, abaque){
       if (length(groups[[i]]) != 1){
         pval = length(which(as.numeric(abaque[[length(groups[[i]])]]) > original.scores[i])) / 
@@ -71,6 +70,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     }
     pvalues = unlist(lapply(1:length(groups), PVAL, groups, original.scores, abaque))
     sig.clusters <- length(pvalues[pvalues<0.1 & !is.na(pvalues)]) / length(pvalues)
+    abaque <- as.data.frame(do.call(cbind, abaque))
     pval.res <- list(pvalues, sig.clusters, abaque)
     names(pval.res) = names('pvalues', 'proportion sig. clusters', 'simulated sets')
     return(pval.res)
