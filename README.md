@@ -158,10 +158,10 @@ rownames(exp) <- make.names(dat[,gene.col], unique=TRUE)
 
 # annotaiton dataset
 ## calculate number of GO terms assign to a specific number of genes
-sum(apply(ann, 2, sum) >= 100)
+sum(apply(ann, 2, sum) >= 10)
 
 ## choose the appropriate number of GO terms for annotation dataset
-ann <- ann[, apply(ann, 2, sum) >= 100]
+ann <- ann[, apply(ann, 2, sum) >= 10]
 
 # choose the number of clustering groups
 nb.group=8
@@ -172,22 +172,43 @@ nb.group=8
 # Clustering analysis
 ## the user can choose between two types of integration method through `integrate.method`:
 ## 1. `intego`, which decomposes expression matrix into a binary matrix (InteGO; DOI: 10.1186/1471-2105-14-42)
-## 2. `GOdis`, which combines GO term semantic dissimilarity matrix and gene expression dissimilarity matirx
+## 2. `newdis`, which combines GO term semantic dissimilarity matrix and gene expression dissimilarity matirx
+##     to create a new distance matrix
 ##
 ## the user can also choose from two types of clustering algorithm through `clust.method`:
 ## 1. `agnes` (Agglomerative Nesting (Hierarchical Clustering); DOI:10.1002/9780470316801)
 ## 2. `genclust` (GenClust; DOI: 10.1186/1471-2105-6-289)
-res <- DGE.clust(expressions=exp, annotations=ann, clust.method='agnes', nb.group=nb.group)
 
-## view clustering result and vignette
+# integrate.method='intego'
+res <- DGE.clust(expressions=exp, annotations=ann, integrate.method='intego', clust.method='agnes', nb.group=nb.group)
+
+## view clustering result and evaluation scores
 res$groups 
-res$vignette 
+res$evaluation 
 
 # visualize the clustering result
 p <- cluster.plot(datasets, res$groups, x.dsNumber=1, y.dsNumber=2, geneCol=gene.col, adjPvalue=adjPvalue)
 
 ## show plot
 p 
+```
+```r
+# integrate.method='newdis'
+library(GOSemSim)
+semData <- godata(OrgDb=orgdb, ont='BP', keytype=keytype, computeIC=FALSE)
+GO.sim <- mgeneSim(rownames(exp), semData, measure='Wang')
+res2 <- DGE.clust(expressions=exp, annotations=ann, integrate.method='newdis', clust.method='agnes', nb.group=nb.group,
+OrgDb=orgdb, keyType=keytype, alpha=1, nb.dim=2)
+
+## view clustering result and evaluation scores
+res2$groups 
+res2$evaluation 
+
+# visualize the clustering result
+p2 <- cluster.plot(datasets, res2$groups, x.dsNumber=1, y.dsNumber=2, geneCol=gene.col, adjPvalue=adjPvalue)
+
+## show plot
+p2 
 ```
 <p align="center"><img src="../assets/cluster_plot.png" width="450"></p>
 
