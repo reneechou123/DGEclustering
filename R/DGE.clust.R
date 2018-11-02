@@ -43,7 +43,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     return(eva.res)
   }
 
-  PVALUES <- function(groups, original.scores, expressions, nb.sim=100, abaque=NULL){
+  PVALUES <- function(groups, original.scores, expressions, nb.sim=100, abaque=NULL, threshold=0.1){
     set.seed(random.seed)
     size = function(x){return(as.numeric(lapply(1:length(x), function(g){return(length(x[[g]]))})))}
     taille.g = unique(size(groups))
@@ -58,6 +58,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     for (i in 1:length(taille.g)){
       abaque = ABAQUE(taille.g[i], abaque)
     }
+    abaque <- as.data.frame(do.call(cbind, abaque))
     PVAL = function(i, groups, original.scores, abaque){
       if (length(groups[[i]]) != 1){
         pval = length(which(as.numeric(abaque[[length(groups[[i]])]]) > original.scores[i])) / 
@@ -66,12 +67,13 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
       else{ 
 	pval = NA
       }
-      names(pval) = c('pvalues')
       return(pval)
     }
-    groups.pval = lapply(1: length(groups), PVAL, groups, original.scores, abaque)
-    names(groups.pval) = names(groups)
-    return(list(groups.pval, abaque))
+    pvalues = unlist(lapply(1:length(groups), PVAL, groups, original.scores, abaque))
+    sig.clusters <- length(pvalues[pvalues<0.1 & !is.na(pvalues)]) / length(pvalues)
+    pval.res <- list(pvalues, sig.clusters, abaque)
+    names(pval.res) = names('pvalues', 'proportion sig. clusters', 'simulated sets')
+    return(pval.res)
     # proportion of pvalues
   }
   #--- code modified from InteGO ---#
@@ -242,12 +244,14 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
   
   if (integrate.method == 'intego'){
     evaluation <- EVALUATE(groups, expressions)
-    res <- list(groups, integrated.matrix, MCA, vignette, evaluation)
+    pvalues <- PVALUES(groups, evaluation$original.scores, expressions) 
+    res <- list(groups, integrated.matrix, MCA, vignette, list(evaluation, pvalues))
     names(res) <- c('groups', 'integrated.matrix', 'MCA', 'vignette', 'evaluation')
   }
   else {
     evaluation <- EVALUATE(groups, sub.expressions)
-    res <- list(groups, integrated.matrix, PCA, vignette, evaluation)
+    pvalues <- PVALUES(groups, evaluation$original.scores, sub.expressions)
+    res <- list(groups, integrated.matrix, PCA, vignette, list(evaluation, pvalues))
     names(res) <- c('groups', 'integrated.matrix', 'PCA', 'vignette', 'evaluation')
   }
   return(res)
