@@ -16,7 +16,7 @@
 #' @references \url{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-42}
 #' @return
 #' @examples  \dontrun{}
-DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, alpha=1, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL, sim.mat=NULL){
+DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', clust.method='agnes', nb.group, OrgDb=NULL, ont='BP', keyType=NULL, alpha=1, genclust.priori=FALSE, nb.generation=500, LIM.ASSO=4, LIM.COR=0.5, nb.dim=NULL, sim.mat=NULL, random.seed=123){
   nb.dim.ex <- ncol(expressions)
   nb.dim.an <- min((nrow(annotations) - 1), (ncol(annotations) - 1))
   expressions <- scale(expressions)
@@ -44,33 +44,35 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
   }
 
   PVALUES <- function(groups, original.scores, expressions, nb.sim=100, abaque=NULL){
+    set.seed(random.seed)
     size = function(x){return(as.numeric(lapply(1:length(x), function(g){return(length(x[[g]]))})))}
     taille.g = unique(size(groups))
     taille.g = taille.g[taille.g > 1]  
-    ABAQUE = function(taille){
+    ABAQUE = function(taille, abaque){
       simu = replicate(nb.sim, EVALUATE(groups = list(sample(row.names(expressions))[1:taille]), 
 					  expressions = expressions)$original.scores)
-      simu = t(simplify2array(simu))
+      # simu = t(simplify2array(simu))
       abaque[[taille]] = simu ; names(abaque)[taille] = taille
       return(abaque)
     }
     for (i in 1:length(taille.g)){
       abaque = ABAQUE(taille.g[i], abaque)
     }
-    PVAL = function(i, groups, groups.indic, abaque){
+    PVAL = function(i, groups, original.scores, abaque){
       if (length(groups[[i]]) != 1){
-        pval = c(length(which(as.numeric(abaque[[length(groups[[i]])]][, 1]) > groups.indic[[i]])) 
-		 / nrow(abaque[[length(groups[[i]])]]))
+        pval = length(which(as.numeric(abaque[[length(groups[[i]])]]) > original.scores[i])) / 
+		length(abaque[[length(groups[[i]])]])
       } 
       else{ 
 	pval = NA
       }
-      names(pval) = c("indic.coexp")
+      names(pval) = c('pvalues')
       return(pval)
     }
     groups.pval = lapply(1: length(groups), PVAL, groups, original.scores, abaque)
     names(groups.pval) = names(groups)
     return(list(groups.pval, abaque))
+    # proportion of pvalues
   }
   #--- code modified from InteGO ---#
 
