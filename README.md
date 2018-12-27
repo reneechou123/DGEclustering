@@ -195,6 +195,8 @@ p <- cluster.plot(datasets, res$groups, x.dsNumber=1, y.dsNumber=2, geneCol=gene
 ## show plot
 p 
 ```
+<p align="center"><img src="../assets/cluster_plot.png" width="450"></p>
+
 ```r
 # integrate.method='newdis'
 library(GOSemSim)
@@ -213,7 +215,7 @@ p2 <- cluster.plot(datasets, res2$groups, x.dsNumber=1, y.dsNumber=2, geneCol=ge
 ## show plot
 p2 
 ```
-<p align="center"><img src="../assets/cluster_plot.png" width="450"></p>
+<p align="center"><img src="../assets/cluster_plot_2.png" width="450"></p>
 
 ``` r
 # visualize the clustering result (MCA plot)
