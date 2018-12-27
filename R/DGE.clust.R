@@ -76,7 +76,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
     return(pval.res)
     # proportion of pvalues
   }
-  #--- code modified from InteGO ---#
+  #--- End code modified from InteGO ---#
 
   if (!is.null(annotations)){
     if (integrate.method == 'intego'){
