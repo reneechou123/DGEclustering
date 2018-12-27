@@ -112,9 +112,7 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
 
       # integration
       integrated.matrix <- sem.dis ^ alpha * exp.dis
-      integrated.matrix <- scale(integrated.matrix)
-      PCA <- PCAsimple(integrated.matrix)$ind[, 1:nb.dim]
-      DIST <- dist(PCA, diag=TRUE, upper=TRUE)
+      DIST <- as.dist(integrated.matrix, diag=TRUE, upper=TRUE)
     }
   
     if (clust.method != 'genclust'){ # set intego as default
