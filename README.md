@@ -43,6 +43,7 @@ Import libraries:
 ``` r
 library(DGEclustering)
 library(AnnotationHub)
+library(grid)
 # Code from https://github.com/lcdb/lcdb-wf/blob/master/workflows/rnaseq/downstream/helpers.Rmd
 hub <- AnnotationHub::.Hub("AnnotationHub",
         getAnnotationHubOption("URL"),
