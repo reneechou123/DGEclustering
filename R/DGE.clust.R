@@ -243,14 +243,14 @@ DGE.clust <- function(expressions, annotations=NULL, integrate.method='intego', 
   if (integrate.method == 'intego'){
     evaluation <- EVALUATE(groups, expressions)
     pvalues <- PVALUES(groups, evaluation$original.scores, expressions) 
-    res <- list(groups, integrated.matrix, MCA, vignette, list(evaluation, pvalues))
-    names(res) <- c('groups', 'integrated.matrix', 'MCA', 'vignette', 'evaluation')
+    res <- list(groups, integrated.matrix, MCA, DIST, vignette, list(evaluation, pvalues))
+    names(res) <- c('groups', 'integrated.matrix', 'MCA', 'distance.matrix', 'vignette', 'evaluation')
   }
   else {
     evaluation <- EVALUATE(groups, sub.expressions)
     pvalues <- PVALUES(groups, evaluation$original.scores, sub.expressions)
-    res <- list(groups, integrated.matrix, PCA, vignette, list(evaluation, pvalues))
-    names(res) <- c('groups', 'integrated.matrix', 'PCA', 'vignette', 'evaluation')
+    res <- list(groups, integrated.matrix, DIST, vignette, list(evaluation, pvalues))
+    names(res) <- c('groups', 'integrated.matrix', 'distance.matrix', 'vignette', 'evaluation')
   }
   return(res)
 }
