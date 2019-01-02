@@ -64,6 +64,7 @@ dir <- './'
 automation(rootDir=dir, geneCol=gene.col, qqPlot=TRUE, fishPlot=TRUE, scatterPlot=TRUE)
 
 ## (optional) search for files in the database
+library(RSQLite)
 mydb <- dbConnect(RSQLite::SQLite(), 'rnaseq.db')
 dbListTables(mydb)
 
