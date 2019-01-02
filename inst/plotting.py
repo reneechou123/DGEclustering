@@ -62,10 +62,10 @@ def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir
         plt.close()
         fig = plt.figure(figsize=(18, 18))
         ax = fig.add_subplot(111)
-        g4 = ax.scatter(NS_vs_NS[log2FoldChange_x], NS_vs_NS[log2FoldChange_y], s=9, c='grey', alpha=0.3)
-        g3 = ax.scatter(NS_vs_sig[log2FoldChange_x], NS_vs_sig[log2FoldChange_y], s=9, c=(31 / 255., 119 / 255., 180 / 255.), alpha=0.6)
-        g2 = ax.scatter(sig_vs_NS[log2FoldChange_x], sig_vs_NS[log2FoldChange_y], s=9, c=(255 / 255., 127 / 255., 14 / 255.), alpha=0.6)
-        g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=15, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
+        g4 = ax.scatter(NS_vs_NS[log2FoldChange_x], NS_vs_NS[log2FoldChange_y], s=15, c='grey', alpha=0.3)
+        g3 = ax.scatter(NS_vs_sig[log2FoldChange_x], NS_vs_sig[log2FoldChange_y], s=15, c=(31 / 255., 119 / 255., 180 / 255.), alpha=0.6)
+        g2 = ax.scatter(sig_vs_NS[log2FoldChange_x], sig_vs_NS[log2FoldChange_y], s=15, c=(255 / 255., 127 / 255., 14 / 255.), alpha=0.6)
+        g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=22, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
 
         ax.legend((g1, g2, g3, g4),(
             'sig vs sig (' + str(sig_vs_sig.shape[0]) + ')',
@@ -87,8 +87,8 @@ def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir
         anchored_text.patch.set(color='red', alpha=0.3)
 
         ax.set_title(title, fontweight='bold', fontsize=36, y=1.02)
-        ax.set_xlabel(xtitle + u' log\u2082 fold change', fontsize=35)
-        ax.set_ylabel(ytitle + u' log\u2082 fold change', fontsize=35)
+        ax.set_xlabel(xtitle + u' (log\u2082 fold change)', fontsize=35)
+        ax.set_ylabel(ytitle + u' (log\u2082 fold change)', fontsize=35)
         ax.add_artist(anchored_text)
         ax.tick_params(labelsize=22)
 
@@ -127,9 +127,9 @@ def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir
         fig = plt.figure(figsize=(18, 18))
         ax = fig.add_subplot(111)
        
-        g2 = ax.scatter(non_NA_set[log2FoldChange_x], non_NA_set[log2FoldChange_y], s=9, c='grey', alpha=0.3)
+        g2 = ax.scatter(non_NA_set[log2FoldChange_x], non_NA_set[log2FoldChange_y], s=15, c='grey', alpha=0.3)
         if len(datasets) == 2:
-            g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=15, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
+            g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=22, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
             ax.legend((g1,), ('sig vs sig (' + str(sig_vs_sig.shape[0]) + ')',), markerscale=3, prop={'size': 26})
         else:
             g1 = ax.scatter(all_sig[log2FoldChange_x], all_sig[log2FoldChange_y], s=15, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
@@ -143,8 +143,8 @@ def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir
         ax.axhline(y=0, linestyle='dotted', color='grey')
         
         ax.set_title(title, fontweight='bold', fontsize=36, y=1.02)
-        ax.set_xlabel(xtitle + u' log\u2082 fold change', fontsize=35)
-        ax.set_ylabel(ytitle + u' log\u2082 fold change', fontsize=35)
+        ax.set_xlabel(xtitle + u' (log\u2082 fold change)', fontsize=35)
+        ax.set_ylabel(ytitle + u' (log\u2082 fold change)', fontsize=35)
         if len(datasets) == 2:
             ax.add_artist(anchored_text)
         ax.tick_params(labelsize=22)
