@@ -168,8 +168,8 @@ def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir
         ax.axvline(x=0, linestyle='dotted', color='grey')
         ax.axhline(y=0, linestyle='dotted', color='grey')
         ax.set_title(title, fontweight='bold', fontsize=36, y=1.02)
-        ax.set_xlabel(xtitle + u' log\u2082 fold change', fontsize=35)
-        ax.set_ylabel(ytitle + u' log\u2082 fold change', fontsize=35)
+        ax.set_xlabel(xtitle + u' (log\u2082 fold change)', fontsize=35)
+        ax.set_ylabel(ytitle + u' (log\u2082 fold change)', fontsize=35)
         ax.tick_params(labelsize=22)
 
         return ax
