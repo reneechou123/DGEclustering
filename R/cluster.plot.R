@@ -14,7 +14,7 @@
 #' @export
 #' @import png
 #' @examples  \dontrun{}
-cluster.plot <- function(datasets, res.groups, res.MCA, MCA=FALSE, subplots=FALSE, x.dsNumber=1, y.dsNumber=2, geneCol, adjPvalue=TRUE, color='brg'){
+cluster.plot <- function(datasets, res.groups, res.MCA, MCA=FALSE, subplots=FALSE, x.dsNumber=1, y.dsNumber=2, geneCol, adjPvalue=TRUE, color='brg', dotSize=20){
   temp.folder <- '/tmp/dgeclustering'
   system(paste('mkdir -p', temp.folder))
   cluster.filepath <- file.path(temp.folder, 'clusters.tsv')
@@ -52,7 +52,8 @@ cluster.plot <- function(datasets, res.groups, res.MCA, MCA=FALSE, subplots=FALS
 	       '-g', geneCol,
 	       '-r', cluster.filepath,
                '-a', python.boolean.convert(adjPvalue),
-               '-c', color))
+               '-c', color,
+               '-z', dotSize))
   # plotting
   if (subplots == FALSE){
     img <- readPNG(file.path(temp.folder, 'cluster_all.png'))

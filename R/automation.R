@@ -11,7 +11,7 @@
 #' @param scatterPlot if TRUE, plot scatter plots
 #' @export
 #' @import RSQLite
-automation <- function(rootDir, geneCol, x.threshold=0.05, y.threshold=0.05, adjPvalue=TRUE, qqPlot=TRUE, fishPlot=TRUE, scatterPlot=TRUE){
+automation <- function(rootDir, geneCol, x.threshold=0.05, y.threshold=0.05, adjPvalue=TRUE, qqPlot=TRUE, fishPlot=TRUE, scatterPlot=TRUE, dotSize=20){
   
   python.boolean.convert <- function(bool) {
     if (bool == TRUE)
@@ -28,6 +28,7 @@ automation <- function(rootDir, geneCol, x.threshold=0.05, y.threshold=0.05, adj
                '-a', python.boolean.convert(adjPvalue),
                '-q', python.boolean.convert(qqPlot),
                '-f', python.boolean.convert(fishPlot),
-               '-s', python.boolean.convert(scatterPlot)))
+               '-s', python.boolean.convert(scatterPlot),
+               '-z', dotSize))
 }
 

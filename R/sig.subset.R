@@ -10,7 +10,7 @@
 #' @export
 #' @import png
 #' @import ggplot2
-sig.subset <- function(datasets, geneCol, x.dsNumber=1, y.dsNumber=2, x.threshold=0.05, y.threshold=0.05, adjPvalue=TRUE) {
+sig.subset <- function(datasets, geneCol, x.dsNumber=1, y.dsNumber=2, x.threshold=0.05, y.threshold=0.05, adjPvalue=TRUE, dotSize=20) {
   # export datasets to temp folder
   temp.folder <- '/tmp/dgeclustering'
   system(paste('mkdir -p', temp.folder))
@@ -37,7 +37,8 @@ sig.subset <- function(datasets, geneCol, x.dsNumber=1, y.dsNumber=2, x.threshol
              '-o', 'temp',
              '-x', x.threshold,
              '-y', y.threshold,
-             '-a', python.boolean.convert(adjPvalue)))
+             '-a', python.boolean.convert(adjPvalue),
+             '-z', dotSize))
   # plot the scatter plot
   img <- readPNG(file.path(temp.folder, 'temp_sig_plot.png'))
   g <- grid::rasterGrob(img, interpolate=TRUE) 
