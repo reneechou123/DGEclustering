@@ -23,6 +23,7 @@ def main():
     parser.add_argument('-r', '--clustering_result', required=True, help='file path of the clustering result')
     parser.add_argument('-a', '--adj_pvalue', default=1, type=int, help='whether to use adjusted pvalue or pvalue. 1 as True, 0 as False')
     parser.add_argument('-c', '--color', default='brg', help='cmap color for visualization')
+    parser.add_argument('-z', '--dot_size', default=20, type=int, help='size of data points')
     args = parser.parse_args()
     
     warnings.filterwarnings('ignore') # ignore runtime warnings
@@ -56,7 +57,7 @@ def main():
     fig = plt.figure(figsize=(18, 18))
     ax = fig.add_subplot(111)
     if args.MCA_result == 0:
-        ax = plotting.scatter_plot(file_paths=args.file_paths, gene_col=args.gene_col, x_file_number=args.x_file_number, y_file_number=args.y_file_number, adj_pvalue=args.adj_pvalue, for_cluster_plot=True)
+        ax = plotting.scatter_plot(file_paths=args.file_paths, gene_col=args.gene_col, x_file_number=args.x_file_number, y_file_number=args.y_file_number, adj_pvalue=args.adj_pvalue, for_cluster_plot=True, dot_size=args.dot_size)
     else:
         title = 'MCA plot'
         xtitle = 'Dim1'
@@ -79,11 +80,11 @@ def main():
         # plot the centroid for each cluster
         cx = np.mean(x)
         cy = np.mean(y)
-        ax.scatter(cx, cy, s=9, facecolors='none', edgecolors='black', alpha=0.5)
+        ax.scatter(cx, cy, s=12, facecolors='none', edgecolors='black', alpha=0.5)
         ax.annotate(str(index + 1), xy=(cx, cy), xytext=(cx + 0.01, cy + 0.01))
 
         # plot data points
-        groups.append(ax.scatter(x, y, s=10, c=([color,] * group.shape[0]), alpha=0.6))
+        groups.append(ax.scatter(x, y, s=args.dot_size, c=([color,] * group.shape[0]), alpha=0.6))
         group_names.append('cluster ' + str(index + 1) + ' (' + str(group.shape[0]) + ')')
 
         # plot lines from centroid to points
@@ -111,7 +112,7 @@ def main():
         fig = plt.figure(figsize=(18, 18))
         ax = fig.add_subplot(111)
         if args.MCA_result == 0:
-            ax = plotting.scatter_plot(file_paths=args.file_paths, gene_col=args.gene_col, x_file_number=args.x_file_number, y_file_number=args.y_file_number, adj_pvalue=args.adj_pvalue, for_cluster_plot=True)
+            ax = plotting.scatter_plot(file_paths=args.file_paths, gene_col=args.gene_col, x_file_number=args.x_file_number, y_file_number=args.y_file_number, adj_pvalue=args.adj_pvalue, for_cluster_plot=True, dot_size=args.dot_size)
         else:
             title = 'MCA plot'
             xtitle = 'Dim1'
@@ -131,7 +132,7 @@ def main():
                 # plot the centroid for each cluster
                 cx = np.mean(x)
                 cy = np.mean(y)
-                ax.scatter(cx, cy, s=3, facecolors='none', edgecolors='grey', alpha=0.3)
+                ax.scatter(cx, cy, s=8, facecolors='none', edgecolors='grey', alpha=0.3)
                 ax.annotate(str(index + 1), xy=(cx, cy), xytext=(cx + 0.01, cy + 0.01), color='grey')
 
                 # plot lines from centroid to points
@@ -140,7 +141,7 @@ def main():
                             linestyle='dashed', linewidth=0.5, c='grey', alpha=0.3)
                  
                 # plot data points
-                ax.scatter(x, y, s=5, c=('grey'), alpha=0.3)
+                ax.scatter(x, y, s=args.dot_size, c=('grey'), alpha=0.3)
 
                 # encircle the group points
                 slope, intercept, r_value, p_value, std_err = linregress(x,y)
@@ -158,7 +159,7 @@ def main():
         
         cx = np.mean(x)
         cy = np.mean(y)
-        ax.scatter(cx, cy, s=9, facecolors='none', edgecolors='grey')
+        ax.scatter(cx, cy, s=12, facecolors='none', edgecolors='grey')
         ax.annotate(str(j + 1), xy=(cx, cy), xytext=(cx + 0.01, cy + 0.01))
                 
         # plot lines from centroid to cluster j points
@@ -166,7 +167,7 @@ def main():
             ax.plot([cx, x[row]], [cy, y[row]], linestyle='dashed', linewidth=0.5, c=color)
         
         # plot data points
-        g1 = ax.scatter(x, y, s=20, c=([color,] * group.shape[0]), edgecolors='black', linewidth=0.8)
+        g1 = ax.scatter(x, y, s=args.dot_size, c=([color,] * group.shape[0]), edgecolors='black', linewidth=0.8)
         g1_name = 'cluster ' + str(j + 1) + ' (' + str(group_list[j].shape[0]) + ')'
                  
         # encircle the cluster j group points

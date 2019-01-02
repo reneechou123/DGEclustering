@@ -21,6 +21,7 @@ def main():
     parser.add_argument('-q', '--qq_plot', default=1, type=int, help='generate Q-Q plots. 1 as True, 0 as False')
     parser.add_argument('-f', '--fish_plot', default=1, type=int, help='generate fish plots. 1 as True, 0 as False')
     parser.add_argument('-s', '--scatter_plot', default=1, type=int, help='generate scatter plots. 1 as True, 0 as False')
+    parser.add_argument('-z', '--dot_size', default=20, type=int, help='size of data points')
     args = parser.parse_args()
 
     warnings.filterwarnings('ignore') # ignore runtime warnings
@@ -142,7 +143,7 @@ def main():
             plotting.fish_plot(paired_file['file_1'], paired_file['file_2'], gene_col=args.gene_col, output_dir=args.root_dir+'/fish_plots')
         if args.scatter_plot == 1:
             file_paths = [paired_file['file_1'], paired_file['file_2']]
-            temp = plotting.scatter_plot(file_paths, gene_col=args.gene_col, out_dir=args.root_dir+'/scatter_plots', x_threshold=args.x_threshold, y_threshold=args.y_threshold, adj_pvalue=args.adj_pvalue)
+            temp = plotting.scatter_plot(file_paths, gene_col=args.gene_col, out_dir=args.root_dir+'/scatter_plots', x_threshold=args.x_threshold, y_threshold=args.y_threshold, adj_pvalue=args.adj_pvalue, dot_size=args.dot_size)
 
     # generate null Q-Q plot
     if args.qq_plot == 1:

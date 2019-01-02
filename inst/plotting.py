@@ -8,7 +8,7 @@ from matplotlib.offsetbox import AnchoredText
 from scipy.stats.mstats import mquantiles
 from scipy.stats import beta
 
-def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir='./', x_threshold=0.05, y_threshold=0.05, adj_pvalue=True, for_cluster_plot=False, return_sig_plot=False, out_file_name=None):
+def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir='./', x_threshold=0.05, y_threshold=0.05, adj_pvalue=True, for_cluster_plot=False, return_sig_plot=False, out_file_name=None, dot_size=20):
     # check input file names for regex search
     for index, file_path in enumerate(file_paths):
         if re.search(r".+\/(.+).tsv", file_path) == None:
@@ -62,17 +62,17 @@ def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir
         plt.close()
         fig = plt.figure(figsize=(18, 18))
         ax = fig.add_subplot(111)
-        g4 = ax.scatter(NS_vs_NS[log2FoldChange_x], NS_vs_NS[log2FoldChange_y], s=15, c='grey', alpha=0.3)
-        g3 = ax.scatter(NS_vs_sig[log2FoldChange_x], NS_vs_sig[log2FoldChange_y], s=15, c=(31 / 255., 119 / 255., 180 / 255.), alpha=0.6)
-        g2 = ax.scatter(sig_vs_NS[log2FoldChange_x], sig_vs_NS[log2FoldChange_y], s=15, c=(255 / 255., 127 / 255., 14 / 255.), alpha=0.6)
-        g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=22, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
+        g4 = ax.scatter(NS_vs_NS[log2FoldChange_x], NS_vs_NS[log2FoldChange_y], s=dot_size, c='grey', alpha=0.3)
+        g3 = ax.scatter(NS_vs_sig[log2FoldChange_x], NS_vs_sig[log2FoldChange_y], s=dot_size, c=(31 / 255., 119 / 255., 180 / 255.), alpha=0.6)
+        g2 = ax.scatter(sig_vs_NS[log2FoldChange_x], sig_vs_NS[log2FoldChange_y], s=dot_size, c=(255 / 255., 127 / 255., 14 / 255.), alpha=0.6)
+        g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=dot_size+8, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
 
         ax.legend((g1, g2, g3, g4),(
             'sig vs sig (' + str(sig_vs_sig.shape[0]) + ')',
             'sig vs NS (' + str(sig_vs_NS.shape[0]) + ')',
             'NS vs sig (' + str(NS_vs_sig.shape[0]) + ')',
             'NS vs NS (' + str(NS_vs_NS.shape[0]) + ')'),
-            markerscale=3, prop={'size': 26})
+            markerscale=2, prop={'size': 26})
         ax.set_xlim(min(non_NA_set[log2FoldChange_x].min(), non_NA_set[log2FoldChange_y].min()) - 0.5, 
                 max(non_NA_set[log2FoldChange_x].max(), non_NA_set[log2FoldChange_y].max()) + 0.5)
         ax.set_ylim(min(non_NA_set[log2FoldChange_x].min(), non_NA_set[log2FoldChange_y].min()) - 0.5, 
@@ -127,13 +127,13 @@ def scatter_plot(file_paths, gene_col, x_file_number=0, y_file_number=1, out_dir
         fig = plt.figure(figsize=(18, 18))
         ax = fig.add_subplot(111)
        
-        g2 = ax.scatter(non_NA_set[log2FoldChange_x], non_NA_set[log2FoldChange_y], s=15, c='grey', alpha=0.3)
+        g2 = ax.scatter(non_NA_set[log2FoldChange_x], non_NA_set[log2FoldChange_y], s=dot_size, c='grey', alpha=0.3)
         if len(datasets) == 2:
-            g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=22, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
-            ax.legend((g1,), ('sig vs sig (' + str(sig_vs_sig.shape[0]) + ')',), markerscale=3, prop={'size': 26})
+            g1 = ax.scatter(sig_vs_sig[log2FoldChange_x], sig_vs_sig[log2FoldChange_y], s=dot_size+8, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
+            ax.legend((g1,), ('sig vs sig (' + str(sig_vs_sig.shape[0]) + ')',), markerscale=2, prop={'size': 26})
         else:
-            g1 = ax.scatter(all_sig[log2FoldChange_x], all_sig[log2FoldChange_y], s=15, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
-            ax.legend((g1,), ('all sig (' + str(all_sig.shape[0]) + ')',), markerscale=3, prop={'size': 26})    
+            g1 = ax.scatter(all_sig[log2FoldChange_x], all_sig[log2FoldChange_y], s=dot_size, c=(214 / 255., 39 / 255., 40 / 255.), alpha=1.0)
+            ax.legend((g1,), ('all sig (' + str(all_sig.shape[0]) + ')',), markerscale=2, prop={'size': 26})    
         
         ax.set_xlim(min(non_NA_set[log2FoldChange_x].min(), non_NA_set[log2FoldChange_y].min()) - 0.5,
                 max(non_NA_set[log2FoldChange_x].max(), non_NA_set[log2FoldChange_y].max()) + 0.5)
