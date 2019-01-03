@@ -141,7 +141,7 @@ def main():
                             linestyle='dashed', linewidth=0.5, c='grey', alpha=0.3)
                  
                 # plot data points
-                ax.scatter(x, y, s=args.dot_size, c=('grey'), alpha=0.3)
+                ax.scatter(x, y, s=20, c=('grey'), alpha=0.3)
 
                 # encircle the group points
                 slope, intercept, r_value, p_value, std_err = linregress(x,y)
