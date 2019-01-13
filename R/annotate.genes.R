@@ -34,7 +34,7 @@ annotate.genes <- function(OrgDb, keyType, genes, GOEnrichment=FALSE, BgGenes=NU
   rownames(ann) <- ds.keys
   if (GOEnrichment == FALSE){
     for (row in 1:nrow(GO.res)){
-      GO.term <- GO.res[row, 'GO']
+      GO.term <- GO.res[row, 'GOALL']
       if (!GO.term %in% colnames(ann))
         ann[GO.term] <- 0
       ann[rownames(ann)==GO.res[row, keyType], GO.term] <- 1
