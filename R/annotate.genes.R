@@ -18,10 +18,10 @@ annotate.genes <- function(OrgDb, keyType, genes, GOEnrichment=FALSE, BgGenes=NU
 
   if (GOEnrichment == FALSE){
     # assign GO terms directly
-    GO.res <- select(OrgDb, ds.keys, c(keyType, 'GO', 'ONTOLOGY'), keyType)
-    GO.res <- GO.res[complete.cases(GO.res['GO']),]
+    GO.res <- select(OrgDb, ds.keys, c(keyType, 'GOALL', 'ONTOLOGYALL'), keyType)
+    GO.res <- GO.res[complete.cases(GO.res['GOALL']),]
     if (ont != 'ALL'){
-      GO.res[GO.res['ONTOLOGY'] == ont,]
+      GO.res[GO.res['ONTOLOGYALL'] == ont,]
     }
   }
   else {
