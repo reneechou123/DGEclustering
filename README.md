@@ -142,6 +142,7 @@ if (length(sig.res) == 3) { ## for two paired datasets we can combine the discor
 
 # Annotate genes
 ann <- annotate.genes(OrgDb=orgdb, keyType=keytype, genes=unlist(dat[gene.col]), GOEnrichment=FALSE)
+rownames(ann) <- make.names(dat[,gene.col], unique=TRUE)
 ```
 
 #### Step 3: Prepare expression and annotation datasets for clustering
