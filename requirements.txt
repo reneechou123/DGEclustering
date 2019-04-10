@@ -11,7 +11,7 @@ r-reshape2
 bioconductor-gosemsim
 bioconductor-genomicfeatures
 r-png
-bioconductor-annotationhub
+bioconductor-annotationhub=2.10.1
 r-rsqlite
 bioconductor-DOSE=3.4.0
 # Reproducibility
