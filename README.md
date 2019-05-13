@@ -23,8 +23,7 @@ git clone https://github.com/reneechou123/DGEclustering.git
 ``` bash
 conda create -n r-dgeclustering --file DGEclustering/requirements.txt
 source activate r-dgeclustering
-```
-###### *The user can specify desired versions of packages in requirements.txt 
+``` 
 
 ### 3. Install package in R:
 ``` r
